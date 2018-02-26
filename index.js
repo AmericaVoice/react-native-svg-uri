@@ -3,8 +3,9 @@ import {View} from 'react-native';
 import PropTypes from 'prop-types'
 import xmldom from 'xmldom';
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
+import { Svg } from 'expo';
 
-import Svg,{
+const {
     Circle,
     Ellipse,
     G ,
@@ -19,7 +20,7 @@ import Svg,{
     TSpan,
     Defs,
     Stop
-} from 'react-native-svg';
+} = Svg;
 
 import * as utils from './utils';
 
@@ -140,13 +141,13 @@ class SvgUri extends Component{
 
     return responseXML;
   }
-   
-  // Remove empty strings from children array  
+
+  // Remove empty strings from children array
   trimElementChilden(children) {
     for (child of children) {
       if (typeof child === 'string') {
         if (child.trim.length === 0)
-          children.splice(children.indexOf(child), 1); 
+          children.splice(children.indexOf(child), 1);
       }
     }
   }
