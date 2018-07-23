@@ -126,16 +126,22 @@ class SvgUri extends Component{
     this.isComponentMounted = false
   }
 
-  async fetchSVGData(uri){
-    let responseXML = null;
+  async fetchSVGData(uri) {
+    let responseXML = null, error = null;
     try {
       const response = await fetch(uri);
       responseXML = await response.text();
     } catch(e) {
+      error = e;
       console.error("ERROR SVG", e);
     } finally {
       if (this.isComponentMounted) {
-        this.setState({svgXmlData:responseXML});
+        this.setState({ svgXmlData: responseXML }, () => {
+          const { onLoad } = this.props;
+          if (onLoad && !error) {
+            onLoad();
+          }
+        });
       }
     }
 
@@ -221,6 +227,11 @@ class SvgUri extends Component{
 
   obtainComponentAtts({attributes}, enabledAttributes) {
     const styleAtts = {};
+
+    if (this.state.fill && this.props.fillAll) {
+      styleAtts.fill = this.state.fill;
+    }
+
     Array.from(attributes).forEach(({nodeName, nodeValue}) => {
       Object.assign(styleAtts, utils.transformStyle({
         nodeName,
@@ -304,6 +315,8 @@ SvgUri.propTypes = {
   svgXmlData: PropTypes.string,
   source: PropTypes.any,
   fill: PropTypes.string,
+  onLoad: PropTypes.func,
+  fillAll: PropTypes.bool
 }
 
 module.exports = SvgUri;
